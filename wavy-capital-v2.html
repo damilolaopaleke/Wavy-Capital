@@ -1,0 +1,1775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wavy Capital v2.5</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void: #020305;
+  --deep: #05070d;
+  --base: #08091488;
+  --panel: #0a0c15;
+  --card: #0e1020;
+  --card2: #121525;
+  --hover: #161a27;
+  --border: #1a2035;
+  --border2: #242b40;
+  --glow-c: #00c6ff;
+  --glow-c2: rgba(0,198,255,0.12);
+  --glow-c3: rgba(0,198,255,0.35);
+  --gold: #e8a020;
+  --gold2: rgba(232,160,32,0.1);
+  --gold3: rgba(232,160,32,0.3);
+  --green: #00e5a0;
+  --green2: rgba(0,229,160,0.1);
+  --green3: rgba(0,229,160,0.3);
+  --red: #ff2d55;
+  --red2: rgba(255,45,85,0.1);
+  --red3: rgba(255,45,85,0.3);
+  --amber: #ffb800;
+  --amber2: rgba(255,184,0,0.1);
+  --purple: #a855f7;
+  --purple2: rgba(168,85,247,0.1);
+  --t1: #eef0f8;
+  --t2: #8590a8;
+  --t3: #4a5168;
+  --t4: #2a3050;
+  --mono: 'IBM Plex Mono', monospace;
+  --display: 'Chakra Petch', sans-serif;
+  --body: 'DM Sans', sans-serif;
+  --r: 3px;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--void);
+  color: var(--t1);
+  font-family: var(--body);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* GRID BACKGROUND */
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(0,198,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,198,255,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events:none; z-index:0;
+}
+
+/* VIGNETTE */
+body::after {
+  content:'';
+  position:fixed; inset:0;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(2,3,5,0.85) 100%);
+  pointer-events:none; z-index:0;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  position:fixed; top:0; left:0; right:0; height:56px;
+  background: rgba(5,7,13,0.96);
+  border-bottom: 1px solid var(--border);
+  display:flex; align-items:center; padding:0 20px; gap:0;
+  z-index:1000; backdrop-filter:blur(20px);
+}
+
+.brand {
+  display:flex; align-items:center; gap:12px;
+  padding-right:24px;
+  border-right:1px solid var(--border);
+  margin-right:20px;
+  text-decoration:none;
+}
+
+.brand-icon {
+  width:36px; height:36px;
+  background: linear-gradient(135deg, var(--glow-c), #0066ff);
+  border-radius:6px;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow: 0 0 20px rgba(0,198,255,0.3);
+  flex-shrink:0;
+}
+
+.brand-icon svg { width:20px; height:20px; }
+
+.brand-name {
+  font-family:var(--display);
+  font-size:15px; font-weight:700;
+  letter-spacing:2px; text-transform:uppercase;
+  color: var(--t1);
+  line-height:1;
+}
+
+.brand-ver {
+  font-family:var(--mono);
+  font-size:9px; color:var(--glow-c);
+  letter-spacing:1px; margin-top:2px;
+}
+
+.nav { display:flex; gap:2px; flex:1; }
+
+.nav-btn {
+  padding:8px 14px;
+  font-family:var(--display);
+  font-size:11px; font-weight:600;
+  letter-spacing:1.5px; text-transform:uppercase;
+  color:var(--t3); border:none;
+  background:transparent; cursor:pointer;
+  transition:all .15s; border-radius:var(--r);
+  border-bottom: 2px solid transparent;
+}
+.nav-btn:hover { color:var(--t2); background:rgba(255,255,255,0.03); }
+.nav-btn.active { color:var(--glow-c); border-bottom-color:var(--glow-c); background:var(--glow-c2); }
+
+.topbar-end {
+  display:flex; align-items:center; gap:16px;
+  margin-left:auto; padding-left:20px;
+  border-left:1px solid var(--border);
+}
+
+.kate-indicator {
+  display:flex; align-items:center; gap:7px;
+  padding:5px 12px;
+  background:var(--purple2);
+  border:1px solid rgba(168,85,247,0.25);
+  border-radius:var(--r);
+  font-family:var(--mono); font-size:9px;
+  color: var(--purple); letter-spacing:1px;
+}
+
+.kate-dot {
+  width:6px; height:6px; border-radius:50%;
+  background:var(--purple);
+  animation: blink-purple 3s ease infinite;
+}
+
+@keyframes blink-purple {
+  0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(168,85,247,0.5);}
+  50%{opacity:0.6;box-shadow:0 0 0 4px rgba(168,85,247,0);}
+}
+
+.sys-time {
+  font-family:var(--mono); font-size:10px;
+  color:var(--t3); letter-spacing:.5px;
+}
+
+.live-pill {
+  display:flex; align-items:center; gap:6px;
+  padding:4px 10px;
+  background:var(--green2);
+  border:1px solid var(--green3);
+  border-radius:var(--r);
+  font-family:var(--mono); font-size:9px;
+  color:var(--green); letter-spacing:1.5px;
+}
+.live-dot {
+  width:5px; height:5px; border-radius:50%;
+  background:var(--green);
+  animation:pulse-g 2s infinite;
+}
+@keyframes pulse-g {
+  0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,229,160,0.5);}
+  50%{opacity:.7;box-shadow:0 0 0 5px rgba(0,229,160,0);}
+}
+
+/* ── LAYOUT ── */
+.app { padding-top:56px; padding-bottom:32px; min-height:100vh; position:relative; z-index:1; }
+.page { display:none; }
+.page.active { display:block; }
+
+/* ── GENERATE PAGE ── */
+.gen-layout {
+  display:grid;
+  grid-template-columns: 1fr 420px;
+  gap:1px;
+  background:var(--border);
+  min-height:calc(100vh - 56px);
+}
+
+.gen-form-pane {
+  background:var(--deep);
+  padding:32px;
+  overflow-y:auto;
+}
+
+.gen-output-pane {
+  background:var(--panel);
+  display:flex; flex-direction:column;
+  position:sticky; top:56px;
+  height:calc(100vh - 56px);
+  overflow:hidden;
+}
+
+.pane-header {
+  padding:16px 20px;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  flex-shrink:0;
+}
+
+.pane-title {
+  font-family:var(--display);
+  font-size:10px; font-weight:700;
+  letter-spacing:3px; text-transform:uppercase;
+  color:var(--t3);
+}
+
+.pane-body {
+  flex:1; overflow-y:auto; padding:20px;
+}
+
+.form-section-title {
+  font-family:var(--display);
+  font-size:10px; font-weight:700;
+  letter-spacing:2.5px; text-transform:uppercase;
+  color:var(--glow-c);
+  padding:0 0 10px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:16px;
+  display:flex; align-items:center; gap:8px;
+}
+
+.form-section-title::before {
+  content:'';
+  display:block; width:3px; height:14px;
+  background:var(--glow-c);
+  border-radius:2px;
+}
+
+.gen-header {
+  margin-bottom:28px;
+}
+
+.gen-title {
+  font-family:var(--display);
+  font-size:30px; font-weight:700;
+  letter-spacing:2px; text-transform:uppercase;
+  line-height:1.1; margin-bottom:6px;
+}
+.gen-title span { color:var(--glow-c); }
+
+.gen-sub {
+  font-family:var(--mono);
+  font-size:10px; color:var(--t3);
+  letter-spacing:1px;
+}
+
+.fields-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-bottom:16px;
+}
+
+.field { display:flex; flex-direction:column; gap:5px; }
+.field.full { grid-column:1/-1; }
+
+.field-label {
+  font-family:var(--mono);
+  font-size:9px; color:var(--t3);
+  letter-spacing:2px; text-transform:uppercase;
+}
+
+.field input, .field select, .field textarea {
+  background:var(--card);
+  border:1px solid var(--border);
+  color:var(--t1);
+  font-family:var(--mono);
+  font-size:12px;
+  padding:9px 12px;
+  outline:none;
+  transition:border-color .15s, background .15s;
+  border-radius:var(--r);
+  width:100%;
+}
+
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-color:var(--glow-c);
+  background:rgba(0,198,255,0.04);
+}
+
+.field select {
+  appearance:none; cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%234a5168'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 12px center;
+}
+.field select option { background:var(--card); }
+
+.field textarea { resize:vertical; min-height:80px; line-height:1.6; }
+
+/* SETUP RATING SELECTOR */
+.account-toggle {
+  display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px;
+}
+
+.acc-option {
+  padding:10px 8px; text-align:center;
+  border:1px solid var(--border);
+  background:var(--card); cursor:pointer;
+  transition:all .15s; border-radius:var(--r);
+  font-family:var(--display);
+  font-size:11px; font-weight:600;
+  letter-spacing:1px; text-transform:uppercase;
+  color:var(--t3);
+}
+.acc-option:hover { border-color:var(--border2); color:var(--t2); }
+.acc-option.sel-prop { background:var(--green2); border-color:var(--green3); color:var(--green); }
+.acc-option.sel-live { background:var(--gold2); border-color:var(--gold3); color:var(--gold); }
+.acc-option.sel-both { background:var(--glow-c2); border-color:var(--glow-c3); color:var(--glow-c); }
+
+/* GENERATE BUTTON */
+.exec-btn {
+  width:100%; padding:14px;
+  font-family:var(--display);
+  font-size:13px; font-weight:700;
+  letter-spacing:3px; text-transform:uppercase;
+  background:linear-gradient(135deg, var(--glow-c), #0066ff);
+  color:#000; border:none; cursor:pointer;
+  transition:all .2s; border-radius:var(--r);
+  position:relative; overflow:hidden;
+  margin-top:4px;
+  box-shadow: 0 4px 20px rgba(0,198,255,0.25);
+}
+.exec-btn:hover { box-shadow:0 4px 30px rgba(0,198,255,0.45); transform:translateY(-1px); }
+.exec-btn:active { transform:translateY(0); }
+.exec-btn:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+
+.exec-loading {
+  position:absolute; bottom:0; left:0; height:2px;
+  background:rgba(255,255,255,0.5);
+  animation:loading-sweep 2s ease-in-out infinite;
+  display:none;
+}
+@keyframes loading-sweep {
+  0%{width:0;left:0} 60%{width:80%;left:10%} 100%{width:0;left:100%}
+}
+
+/* OUTPUT STREAM */
+.output-empty {
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  height:100%; gap:16px;
+  color:var(--t4);
+}
+.output-empty-icon { font-size:40px; opacity:.4; }
+.output-empty-text {
+  font-family:var(--display);
+  font-size:11px; letter-spacing:2px; text-transform:uppercase;
+}
+
+.stream-content {
+  font-family:var(--body);
+  font-size:13.5px; line-height:1.75;
+  color:var(--t2);
+  display:none;
+}
+.stream-content.visible { display:block; }
+
+.stream-content h1 {
+  font-family:var(--display);
+  font-size:14px; font-weight:700;
+  letter-spacing:2px; text-transform:uppercase;
+  color:var(--glow-c);
+  margin:20px 0 8px;
+  padding-bottom:6px;
+  border-bottom:1px solid var(--border);
+}
+.stream-content h1:first-child { margin-top:0; }
+
+.stream-content h2 {
+  font-family:var(--display);
+  font-size:11px; font-weight:700;
+  letter-spacing:2px; text-transform:uppercase;
+  color:var(--gold); margin:16px 0 6px;
+}
+
+.stream-content strong { color:var(--t1); font-weight:600; }
+.stream-content em { color:var(--amber); font-style:normal; }
+
+.cursor-blink {
+  display:inline-block; width:7px; height:13px;
+  background:var(--glow-c); vertical-align:middle;
+  margin-left:2px;
+  animation:blink 1s step-end infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* ── DASHBOARD PAGE ── */
+.dash-grid {
+  display:grid;
+  grid-template-columns: 260px 1fr 280px;
+  grid-template-rows: auto 1fr;
+  min-height:calc(100vh - 56px);
+  gap:1px; background:var(--border);
+}
+
+/* PANEL BASE */
+.p {
+  background:var(--deep);
+  padding:18px;
+  position:relative; overflow:hidden;
+}
+
+.p-head {
+  display:flex; align-items:center;
+  justify-content:space-between;
+  margin-bottom:14px;
+  padding-bottom:12px;
+  border-bottom:1px solid var(--border);
+}
+
+.p-title {
+  font-family:var(--display);
+  font-size:9px; font-weight:700;
+  letter-spacing:3px; text-transform:uppercase;
+  color:var(--t3);
+}
+
+/* TAGS */
+.tag {
+  font-family:var(--mono);
+  font-size:8px; letter-spacing:1.5px;
+  text-transform:uppercase;
+  padding:2px 7px; border-radius:2px;
+}
+.tag-g { background:var(--green2); color:var(--green); border:1px solid rgba(0,229,160,0.25); }
+.tag-r { background:var(--red2); color:var(--red); border:1px solid rgba(255,45,85,0.25); }
+.tag-a { background:var(--amber2); color:var(--amber); border:1px solid rgba(255,184,0,0.25); }
+.tag-b { background:var(--glow-c2); color:var(--glow-c); border:1px solid rgba(0,198,255,0.25); }
+.tag-gold { background:var(--gold2); color:var(--gold); border:1px solid rgba(232,160,32,0.25); }
+.tag-p { background:var(--purple2); color:var(--purple); border:1px solid rgba(168,85,247,0.25); }
+
+/* INSTRUMENT TABS */
+.inst-tabs {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:4px;
+  margin-bottom:14px;
+}
+.inst-tab {
+  padding:7px 4px; text-align:center;
+  font-family:var(--display);
+  font-size:12px; font-weight:700; letter-spacing:.5px;
+  border:1px solid var(--border);
+  background:var(--card); cursor:pointer;
+  transition:all .15s; border-radius:var(--r);
+  color:var(--t3);
+}
+.inst-tab:hover { color:var(--t2); border-color:var(--border2); }
+.inst-tab.on { background:var(--glow-c2); border-color:var(--glow-c3); color:var(--glow-c); }
+
+/* PRICE CARD */
+.price-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:14px; margin-bottom:10px;
+  position:relative; overflow:hidden;
+}
+.price-card::before {
+  content:''; position:absolute;
+  left:0; top:0; bottom:0; width:3px;
+}
+.pc-bear::before { background:var(--red); }
+.pc-bull::before { background:var(--green); }
+.pc-neutral::before { background:var(--glow-c); }
+
+.pc-sym {
+  font-family:var(--mono); font-size:8px;
+  color:var(--t3); letter-spacing:2px;
+  text-transform:uppercase; margin-bottom:4px;
+}
+.pc-price {
+  font-family:var(--mono); font-size:22px;
+  font-weight:700; color:var(--t1);
+  letter-spacing:-1px;
+}
+.pc-chg {
+  font-family:var(--mono); font-size:10px;
+  margin-top:3px; letter-spacing:.5px;
+}
+.down { color:var(--red); }
+.up { color:var(--green); }
+
+/* STRUCTURE ROWS */
+.str-row {
+  display:flex; align-items:center;
+  justify-content:space-between;
+  padding:8px 0;
+  border-bottom:1px solid rgba(26,32,53,0.6);
+}
+.str-row:last-child { border-bottom:none; }
+.str-key {
+  font-family:var(--body); font-size:12px;
+  font-weight:500; color:var(--t2);
+}
+.str-val {
+  font-family:var(--mono); font-size:10px;
+  font-weight:700; letter-spacing:1px;
+  text-transform:uppercase;
+}
+.sv-r { color:var(--red); }
+.sv-g { color:var(--green); }
+.sv-b { color:var(--glow-c); }
+.sv-a { color:var(--amber); }
+
+/* BIAS HERO */
+.bias-hero {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:28px 24px; text-align:center;
+  position:relative; overflow:hidden;
+  margin-bottom:1px;
+}
+
+.bias-hero::after {
+  content:'';
+  position:absolute; inset:0;
+  pointer-events:none;
+}
+.bh-short::after { background:radial-gradient(ellipse at 50% -20%, rgba(255,45,85,0.1) 0%, transparent 65%); }
+.bh-long::after { background:radial-gradient(ellipse at 50% -20%, rgba(0,229,160,0.1) 0%, transparent 65%); }
+.bh-notrade::after { background:radial-gradient(ellipse at 50% -20%, rgba(0,198,255,0.06) 0%, transparent 65%); }
+
+.bh-label {
+  font-family:var(--display); font-size:9px; font-weight:700;
+  letter-spacing:3px; text-transform:uppercase;
+  color:var(--t3); margin-bottom:6px;
+}
+
+.bh-word {
+  font-family:var(--display);
+  font-size:56px; font-weight:700;
+  letter-spacing:6px; text-transform:uppercase;
+  line-height:1;
+}
+.bh-short { color:var(--red); text-shadow:0 0 40px rgba(255,45,85,0.45); }
+.bh-long { color:var(--green); text-shadow:0 0 40px rgba(0,229,160,0.45); }
+.bh-notrade { color:var(--glow-c); text-shadow:0 0 30px rgba(0,198,255,0.3); }
+
+.bh-sub {
+  font-family:var(--body); font-size:12px;
+  color:var(--t3); margin:8px 0 14px;
+}
+
+/* SETUP RATING */
+.setup-rating-row {
+  display:inline-flex; gap:8px;
+  align-items:center; justify-content:center;
+  padding:6px 16px;
+  background:var(--card2); border:1px solid var(--border);
+  border-radius:var(--r);
+  font-family:var(--mono); font-size:10px;
+}
+
+.rating-aplus {
+  background:linear-gradient(135deg,var(--gold),var(--amber));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  font-weight:700; font-size:14px;
+}
+
+/* CONF BAR */
+.conf-row {
+  display:flex; align-items:center; gap:10px;
+  margin-top:12px; justify-content:center;
+}
+.conf-label { font-family:var(--mono); font-size:9px; color:var(--t3); letter-spacing:1px; }
+.conf-bar {
+  width:100px; height:4px;
+  background:var(--border); border-radius:2px; overflow:hidden;
+}
+.conf-fill {
+  height:100%; border-radius:2px;
+  background:linear-gradient(90deg, var(--amber), var(--green));
+  transition:width 1s ease;
+}
+.conf-pct { font-family:var(--mono); font-size:11px; font-weight:700; color:var(--amber); }
+
+/* SETUP GRID — 3 cards */
+.setup-trifold {
+  display:grid; grid-template-columns:1fr 1fr 1fr;
+  gap:1px; background:var(--border); margin-bottom:1px;
+}
+.setup-card {
+  background:var(--card); padding:14px 16px;
+}
+.sc-label { font-family:var(--mono); font-size:8px; color:var(--t3); letter-spacing:2px; text-transform:uppercase; margin-bottom:5px; }
+.sc-name { font-family:var(--display); font-size:11px; font-weight:600; letter-spacing:.5px; text-transform:uppercase; color:var(--t2); margin-bottom:8px; }
+.sc-val { font-family:var(--mono); font-size:14px; font-weight:700; line-height:1.3; }
+.sc-entry { color:var(--glow-c); }
+.sc-stop { color:var(--red); }
+
+.tp-line { display:flex; align-items:center; gap:6px; margin-bottom:3px; }
+.tp-pill {
+  font-family:var(--mono); font-size:7px; letter-spacing:1px;
+  padding:1px 5px; background:var(--green2);
+  color:var(--green); border:1px solid rgba(0,229,160,0.2);
+  border-radius:1px;
+}
+
+/* ACCOUNT PANEL */
+.acct-panel {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:8px; margin-bottom:12px;
+}
+.acct-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:12px 14px;
+  transition:all .2s;
+}
+.acct-card.prop-on {
+  background:var(--green2);
+  border-color:var(--green3);
+}
+.acct-card.live-on {
+  background:var(--gold2);
+  border-color:var(--gold3);
+}
+.acct-card.off { opacity:.35; }
+
+.acct-type {
+  font-family:var(--display); font-size:9px; font-weight:700;
+  letter-spacing:2px; text-transform:uppercase; margin-bottom:4px;
+}
+.prop-on .acct-type { color:var(--green); }
+.live-on .acct-type { color:var(--gold); }
+.acct-card.off .acct-type { color:var(--t3); }
+
+.acct-status {
+  font-family:var(--mono); font-size:10px;
+  font-weight:700; letter-spacing:1px;
+}
+.prop-on .acct-status { color:var(--green); }
+.live-on .acct-status { color:var(--gold); }
+.acct-card.off .acct-status { color:var(--t4); }
+
+.acct-desc {
+  font-family:var(--body); font-size:11px;
+  color:var(--t3); margin-top:4px; line-height:1.4;
+}
+
+/* RULE ROWS */
+.rule-row {
+  display:flex; align-items:flex-start;
+  gap:10px; padding:9px 0;
+  border-bottom:1px solid rgba(26,32,53,0.5);
+}
+.rule-row:last-child { border-bottom:none; }
+.rule-icon { font-size:13px; flex-shrink:0; margin-top:1px; }
+.rule-txt { font-family:var(--body); font-size:12px; font-weight:500; color:var(--t2); line-height:1.45; }
+.rule-txt strong { color:var(--t1); font-weight:600; }
+
+/* DON'T LIST */
+.dont-row {
+  display:flex; align-items:flex-start;
+  gap:10px; padding:8px 12px;
+  background:rgba(255,45,85,0.04);
+  border-left:2px solid rgba(255,45,85,0.35);
+  margin-bottom:6px; border-radius:0 var(--r) var(--r) 0;
+}
+.dont-x { color:var(--red); font-family:var(--mono); font-size:11px; font-weight:700; flex-shrink:0; padding-top:1px; }
+.dont-txt { font-family:var(--body); font-size:12px; font-weight:500; color:var(--t2); line-height:1.45; }
+
+/* TF TABLE */
+.tf-tbl { width:100%; border-collapse:collapse; }
+.tf-tbl th {
+  font-family:var(--mono); font-size:8px;
+  letter-spacing:2px; text-transform:uppercase;
+  color:var(--t3); text-align:left;
+  padding:6px 8px; border-bottom:1px solid var(--border);
+}
+.tf-tbl td {
+  font-family:var(--mono); font-size:10px;
+  padding:7px 8px;
+  border-bottom:1px solid rgba(26,32,53,0.4);
+}
+.tf-tbl tr:last-child td { border-bottom:none; }
+
+/* SIZING PILLS */
+.sizing-row {
+  display:grid; grid-template-columns:1fr 1fr 1fr;
+  gap:6px; margin-bottom:12px;
+}
+.sz-card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:var(--r); padding:12px 8px; text-align:center;
+}
+.sz-rating { font-family:var(--mono); font-size:8px; color:var(--t3); letter-spacing:2px; margin-bottom:4px; }
+.sz-num { font-family:var(--display); font-size:28px; font-weight:700; line-height:1; }
+.sz-unit { font-family:var(--body); font-size:10px; color:var(--t3); margin-top:2px; }
+
+/* ALT SCENARIO */
+.alt-block {
+  background:rgba(232,160,32,0.05);
+  border:1px solid rgba(232,160,32,0.2);
+  border-radius:var(--r); padding:14px 16px;
+  margin-top:12px;
+}
+.alt-ttl {
+  font-family:var(--display); font-size:9px; font-weight:700;
+  letter-spacing:2px; text-transform:uppercase;
+  color:var(--gold); margin-bottom:8px;
+}
+.alt-body {
+  font-family:var(--body); font-size:12px; font-weight:500;
+  color:var(--t2); line-height:1.55;
+}
+
+/* ── PLAYBOOK PAGE ── */
+.pb-page { padding:32px; max-width:1020px; margin:0 auto; }
+
+.pb-hero {
+  margin-bottom:36px;
+}
+.pb-hero-title {
+  font-family:var(--display);
+  font-size:38px; font-weight:700;
+  letter-spacing:3px; text-transform:uppercase; line-height:1;
+  margin-bottom:6px;
+}
+.pb-hero-title span { color:var(--glow-c); }
+.pb-hero-sub {
+  font-family:var(--mono); font-size:10px;
+  color:var(--t3); letter-spacing:2px;
+}
+
+.pb-sec { margin-bottom:28px; }
+
+.pb-sec-hd {
+  font-family:var(--display);
+  font-size:10px; font-weight:700;
+  letter-spacing:3px; text-transform:uppercase;
+  color:var(--glow-c);
+  padding:8px 14px;
+  background:var(--glow-c2);
+  border-left:3px solid var(--glow-c);
+  margin-bottom:12px;
+  display:flex; align-items:center; gap:8px;
+  border-radius:0 var(--r) var(--r) 0;
+}
+
+.pb-card-list {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:var(--r); overflow:hidden;
+}
+
+.pb-card-item {
+  display:flex; align-items:flex-start;
+  gap:14px; padding:14px 18px;
+  border-bottom:1px solid rgba(26,32,53,0.5);
+  transition:background .15s;
+}
+.pb-card-item:last-child { border-bottom:none; }
+.pb-card-item:hover { background:var(--hover); }
+
+.pb-num {
+  font-family:var(--mono); font-size:9px;
+  color:var(--t4); flex-shrink:0; width:22px; padding-top:3px;
+}
+.pb-content { flex:1; }
+.pb-item-title {
+  font-family:var(--display); font-size:14px; font-weight:700;
+  color:var(--t1); letter-spacing:.5px; margin-bottom:4px;
+}
+.pb-item-desc {
+  font-family:var(--body); font-size:12px; font-weight:400;
+  color:var(--t2); line-height:1.5;
+}
+.pb-badge { flex-shrink:0; align-self:flex-start; margin-top:2px; }
+
+/* ACCOUNT LOGIC TABLE */
+.acct-logic {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:var(--r); overflow:hidden;
+}
+.acct-logic-row {
+  display:grid;
+  grid-template-columns:100px 1fr 1fr;
+  border-bottom:1px solid rgba(26,32,53,0.5);
+}
+.acct-logic-row:last-child { border-bottom:none; }
+.alc {
+  padding:12px 16px;
+  font-family:var(--body); font-size:12px;
+  color:var(--t2); line-height:1.4;
+  border-right:1px solid rgba(26,32,53,0.5);
+}
+.alc:last-child { border-right:none; }
+.alc.hd {
+  font-family:var(--mono); font-size:8px;
+  letter-spacing:2px; text-transform:uppercase;
+  color:var(--t3); background:var(--card2);
+}
+
+/* SESSION BAND */
+.session-band {
+  display:flex; overflow:hidden;
+  border:1px solid var(--border); border-radius:var(--r);
+  margin-bottom:14px;
+}
+.sband {
+  flex:1; padding:14px 12px;
+  border-right:1px solid var(--border);
+}
+.sband:last-child { border-right:none; }
+.sband-name {
+  font-family:var(--display); font-size:11px; font-weight:700;
+  letter-spacing:1px; text-transform:uppercase;
+  margin-bottom:3px;
+}
+.sband-time { font-family:var(--mono); font-size:8px; color:var(--t3); margin-bottom:8px; }
+.sband-desc { font-family:var(--body); font-size:11px; color:var(--t2); line-height:1.4; }
+
+/* FINAL DECREE */
+.final-decree {
+  background:linear-gradient(135deg, rgba(0,198,255,0.08), rgba(0,102,255,0.05));
+  border:1px solid rgba(0,198,255,0.25);
+  border-radius:var(--r); padding:28px;
+  text-align:center;
+}
+.fd-eyebrow {
+  font-family:var(--mono); font-size:8px;
+  letter-spacing:3px; text-transform:uppercase;
+  color:var(--glow-c); margin-bottom:14px;
+}
+.fd-text {
+  font-family:var(--display);
+  font-size:19px; font-weight:700;
+  letter-spacing:1.5px; line-height:1.5;
+  color:var(--t1);
+}
+.fd-text span.g { color:var(--green); }
+.fd-text span.b { color:var(--glow-c); }
+.fd-rule {
+  font-family:var(--mono); font-size:9px;
+  letter-spacing:2px; text-transform:uppercase;
+  color:var(--t3); margin-top:16px;
+}
+
+/* KATE SYNC BOX */
+.kate-sync {
+  background:rgba(168,85,247,0.06);
+  border:1px solid rgba(168,85,247,0.2);
+  border-radius:var(--r); padding:14px 16px;
+  display:flex; align-items:flex-start; gap:12px;
+  margin-bottom:16px;
+}
+.kate-sync-icon {
+  width:32px; height:32px; border-radius:50%;
+  background:var(--purple2); border:1px solid rgba(168,85,247,0.3);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; font-size:14px;
+}
+.kate-sync-content { flex:1; }
+.kate-sync-title {
+  font-family:var(--display); font-size:10px; font-weight:700;
+  letter-spacing:2px; text-transform:uppercase;
+  color:var(--purple); margin-bottom:4px;
+}
+.kate-sync-text {
+  font-family:var(--body); font-size:12px;
+  color:var(--t2); line-height:1.45;
+}
+
+/* BOTTOM TICKER */
+.ticker-bar {
+  position:fixed; bottom:0; left:0; right:0; height:28px;
+  background:rgba(5,7,13,0.97); border-top:1px solid var(--border);
+  display:flex; align-items:center; overflow:hidden; z-index:1000;
+}
+.ticker-fade-l, .ticker-fade-r {
+  position:absolute; top:0; bottom:0; width:60px; z-index:2;
+  pointer-events:none;
+}
+.ticker-fade-l { left:0; background:linear-gradient(to right, rgba(5,7,13,1), transparent); }
+.ticker-fade-r { right:0; background:linear-gradient(to left, rgba(5,7,13,1), transparent); }
+.ticker-scroll {
+  display:flex; gap:40px; align-items:center;
+  animation:ticker-move 50s linear infinite;
+  white-space:nowrap; padding:0 60px;
+}
+@keyframes ticker-move {
+  0%{transform:translateX(0)} 100%{transform:translateX(-50%)}
+}
+.tick {
+  display:flex; align-items:center; gap:7px;
+  font-family:var(--mono); font-size:9px;
+}
+.tick-sym { color:var(--t3); letter-spacing:1px; }
+.tick-val { color:var(--t2); }
+.tick-p { color:var(--green); }
+.tick-n { color:var(--red); }
+
+/* SCROLLBARS */
+::-webkit-scrollbar { width:3px; height:3px; }
+::-webkit-scrollbar-track { background:var(--deep); }
+::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+
+/* RESPONSIVE */
+@media(max-width:960px) {
+  .gen-layout { grid-template-columns:1fr; }
+  .gen-output-pane { position:static; height:auto; }
+  .dash-grid { grid-template-columns:1fr; }
+  .fields-grid { grid-template-columns:1fr; }
+  .setup-trifold { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-icon">
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 13 Q4 5 7 10 Q10 15 13 7 Q16 1 19 8" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="7" cy="10" r="1.5" fill="white" opacity=".7"/>
+        <circle cx="13" cy="7" r="1.5" fill="white" opacity=".7"/>
+      </svg>
+    </div>
+    <div>
+      <div class="brand-name">Wavy Capital</div>
+      <div class="brand-ver">SYSTEM v2.5</div>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <button class="nav-btn active" onclick="gotoPage('generate',this)">⚡ Analysis Engine</button>
+    <button class="nav-btn" onclick="gotoPage('dashboard',this)">▦ Command Center</button>
+    <button class="nav-btn" onclick="gotoPage('playbook',this)">◈ Playbook v2.5</button>
+  </nav>
+
+  <div class="topbar-end">
+    <div class="kate-indicator">
+      <div class="kate-dot"></div>
+      KATE ONLINE
+    </div>
+    <div class="live-pill"><div class="live-dot"></div>LIVE</div>
+    <div class="sys-time" id="clk">--:--:-- EST</div>
+  </div>
+</header>
+
+<div class="app">
+
+  <!-- ══════════════════════════
+       PAGE: GENERATE
+  ══════════════════════════ -->
+  <div class="page active" id="pg-generate">
+    <div class="gen-layout">
+
+      <!-- FORM SIDE -->
+      <div class="gen-form-pane">
+        <div class="gen-header">
+          <div class="gen-title">Market <span>Brief</span><br>Generator</div>
+          <div class="gen-sub" style="margin-top:6px">Input conditions → Receive Wavy Capital v2.5 precision analysis</div>
+        </div>
+
+        <!-- KATE SYNC -->
+        <div class="kate-sync">
+          <div class="kate-sync-icon">🤖</div>
+          <div class="kate-sync-content">
+            <div class="kate-sync-title">Dual-AI System — Kate Synced</div>
+            <div class="kate-sync-text">This analysis engine operates alongside Kate. All outputs maintain consistency with Wavy Capital philosophy and institutional-grade execution standards.</div>
+          </div>
+        </div>
+
+        <div class="form-section-title">Instrument + Price</div>
+        <div class="fields-grid">
+          <div class="field">
+            <label class="field-label">Instrument</label>
+            <select id="f-inst">
+              <option>NQ — Nasdaq Futures</option>
+              <option>ES — S&P 500 Futures</option>
+              <option>MNQ — Micro Nasdaq</option>
+              <option>MES — Micro S&P</option>
+              <option>CL — Crude Oil</option>
+              <option>GC — Gold Futures</option>
+              <option>BTC/USD</option>
+              <option>RTY — Russell 2000</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label">Current Price / Level</label>
+            <input id="f-price" type="text" placeholder="e.g. 23,496">
+          </div>
+          <div class="field">
+            <label class="field-label">Key Support</label>
+            <input id="f-sup" type="text" placeholder="e.g. 23,100">
+          </div>
+          <div class="field">
+            <label class="field-label">Key Resistance</label>
+            <input id="f-res" type="text" placeholder="e.g. 23,750">
+          </div>
+        </div>
+
+        <div class="form-section-title">Session + Structure</div>
+        <div class="fields-grid">
+          <div class="field">
+            <label class="field-label">Active Session</label>
+            <select id="f-sess">
+              <option>Asian Session</option>
+              <option selected>London Session</option>
+              <option>NY Open (9:30–11:30)</option>
+              <option>NY Midday (11:30–14:00)</option>
+              <option>NY Power Hour (14:00–16:00)</option>
+              <option>Pre-Market</option>
+              <option>After Hours</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label">Market Structure</label>
+            <select id="f-struct">
+              <option>Strong Downtrend — LH / LL Confirmed</option>
+              <option>Weakening Downtrend — Momentum Slowing</option>
+              <option>Range / Chop — No Clear Direction</option>
+              <option>Transitioning — Structure Break in Progress</option>
+              <option>Weakening Uptrend — Momentum Slowing</option>
+              <option>Strong Uptrend — HH / HL Confirmed</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label">Momentum State</label>
+            <select id="f-mom">
+              <option>Strong / Impulsive — Candles expanding</option>
+              <option>Moderate — Mixed candle strength</option>
+              <option selected>Weakening — Wicks, chop appearing</option>
+              <option>Momentum Shift — Reversal signals forming</option>
+              <option>Exhaustion — Losing steam at extreme</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label">Volatility (VIX)</label>
+            <select id="f-vix">
+              <option>Low — Below 15</option>
+              <option>Moderate — 15–20</option>
+              <option selected>Elevated — 20–30 (Stress)</option>
+              <option>High — 30+ (Panic/Crisis)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-section-title">Liquidity + Context</div>
+        <div class="fields-grid">
+          <div class="field">
+            <label class="field-label">Liquidity / Trap Signals</label>
+            <select id="f-liq">
+              <option>Stop hunt detected — Recent fake move</option>
+              <option>Clean break — No obvious trap</option>
+              <option selected>Possible fake breakout — Watching</option>
+              <option>Liquidity sweep confirmed below/above key level</option>
+              <option>No clear liquidity signal</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label">Macro / News Context</label>
+            <input id="f-macro" type="text" placeholder="e.g. Fed hold, Iran war, earnings">
+          </div>
+          <div class="field full">
+            <label class="field-label">Additional Observations</label>
+            <textarea id="f-notes" placeholder="EMA position, recent candle patterns, institutional activity, overnight behavior, previous day's high/low, etc."></textarea>
+          </div>
+        </div>
+
+        <div class="form-section-title">Account Preference</div>
+        <div class="fields-grid">
+          <div class="field full">
+            <label class="field-label" style="margin-bottom:8px">Which account should analysis target?</label>
+            <div class="account-toggle">
+              <div class="acc-option sel-prop" id="acc-prop" onclick="selectAcc('prop')">🔐 Prop Account</div>
+              <div class="acc-option" id="acc-live" onclick="selectAcc('live')">💰 Live Account</div>
+              <div class="acc-option" id="acc-both" onclick="selectAcc('both')">⚡ Both</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="exec-btn" id="execBtn" onclick="runAnalysis()">
+          ⚡ EXECUTE v2.5 ANALYSIS
+          <div class="exec-loading" id="execLoader"></div>
+        </button>
+      </div>
+
+      <!-- OUTPUT SIDE -->
+      <div class="gen-output-pane">
+        <div class="pane-header">
+          <div class="pane-title">⚡ Wavy Capital v2.5 — Live Output</div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <span class="tag tag-p" id="outKateTag" style="display:none">KATE SYNCED</span>
+            <span class="tag tag-b" id="outTs"></span>
+            <button onclick="copyOut()" style="background:var(--card);border:1px solid var(--border);color:var(--t3);font-family:var(--mono);font-size:8px;padding:3px 8px;cursor:pointer;letter-spacing:1px;border-radius:var(--r);">COPY</button>
+          </div>
+        </div>
+        <div class="pane-body" id="outBody">
+          <div class="output-empty" id="outEmpty">
+            <div class="output-empty-icon">◈</div>
+            <div class="output-empty-text">Awaiting Market Input</div>
+            <div style="font-family:var(--mono);font-size:9px;color:var(--t4);letter-spacing:1px;text-align:center;line-height:1.8">
+              Fill the form →<br>Execute Analysis
+            </div>
+          </div>
+          <div class="stream-content" id="streamOut"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════
+       PAGE: DASHBOARD
+  ══════════════════════════ -->
+  <div class="page" id="pg-dashboard">
+    <div class="dash-grid">
+
+      <!-- LEFT -->
+      <div style="background:var(--border);display:flex;flex-direction:column;gap:1px">
+        <div class="p">
+          <div class="p-head">
+            <span class="p-title">Instruments</span>
+            <span class="tag tag-b">DELAYED</span>
+          </div>
+          <div class="inst-tabs">
+            <div class="inst-tab on" onclick="switchInst(this,'NQ')">NQ</div>
+            <div class="inst-tab" onclick="switchInst(this,'ES')">ES</div>
+            <div class="inst-tab" onclick="switchInst(this,'CL')">CL</div>
+            <div class="inst-tab" onclick="switchInst(this,'GC')">GC</div>
+          </div>
+          <div class="price-card pc-bear" id="mainPC">
+            <div class="pc-sym" id="pcSym">NQ FUTURES — JUN26</div>
+            <div class="pc-price" id="pcPrice">23,496</div>
+            <div class="pc-chg down" id="pcChg">▼ −1.9% | −456 pts</div>
+          </div>
+          <div class="price-card pc-neutral">
+            <div class="pc-sym">VIX — VOLATILITY INDEX</div>
+            <div class="pc-price">26.77</div>
+            <div class="pc-chg" style="color:var(--amber)">▲ STRESS REGIME</div>
+          </div>
+          <div class="price-card pc-bear" style="margin-bottom:0">
+            <div class="pc-sym">BRENT CRUDE</div>
+            <div class="pc-price">$112.40</div>
+            <div class="pc-chg up">▲ +4.2% | WAR PREMIUM</div>
+          </div>
+        </div>
+
+        <div class="p">
+          <div class="p-head">
+            <span class="p-title">Market Structure</span>
+            <span class="tag tag-r">BEARISH</span>
+          </div>
+          <div class="str-row"><span class="str-key">Trend</span><span class="str-val sv-r">▼ BEARISH</span></div>
+          <div class="str-row"><span class="str-key">Pattern</span><span class="str-val sv-r">LH / LL</span></div>
+          <div class="str-row"><span class="str-key">Break of Structure</span><span class="str-val sv-r">CONFIRMED</span></div>
+          <div class="str-row"><span class="str-key">EMA Posture</span><span class="str-val sv-r">BELOW ALL</span></div>
+          <div class="str-row"><span class="str-key">Momentum</span><span class="str-val sv-r">STRONG ↓</span></div>
+          <div class="str-row"><span class="str-key">Liquidity Signal</span><span class="str-val sv-a">TRAP WATCH</span></div>
+          <div class="str-row"><span class="str-key">COT Net</span><span class="str-val sv-r">SHORT −31K</span></div>
+        </div>
+
+        <div class="p" style="flex:1">
+          <div class="p-head">
+            <span class="p-title">Account Selection</span>
+            <span class="tag tag-gold">ACTIVE</span>
+          </div>
+          <div class="acct-panel">
+            <div class="acct-card prop-on">
+              <div class="acct-type">Prop Account</div>
+              <div class="acct-status">✓ APPROVED</div>
+              <div class="acct-desc">A+ setup confirmed. Clean structure + strong downside momentum.</div>
+            </div>
+            <div class="acct-card live-on">
+              <div class="acct-type">Live Account</div>
+              <div class="acct-status">✓ MONITOR</div>
+              <div class="acct-desc">Use for developing trades &amp; B setups with partial size.</div>
+            </div>
+          </div>
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;">
+            <div class="str-row" style="padding:5px 0"><span class="str-key">Recommendation</span><span class="str-val sv-b">BOTH ACTIVE</span></div>
+            <div class="str-row" style="padding:5px 0;border-bottom:none"><span class="str-key">Condition</span><span class="str-val sv-a">A+ IF BOUNCES</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CENTER -->
+      <div style="background:var(--border);display:flex;flex-direction:column;gap:1px">
+
+        <!-- BIAS -->
+        <div class="p">
+          <div class="bias-hero bh-short" style="background:transparent;border:none;padding:20px 0 8px">
+            <div class="bh-label">Today's Bias</div>
+            <div class="bh-word bh-short">SHORT</div>
+            <div class="bh-sub">Fade relief bounces · Never chase the drop</div>
+            <div class="setup-rating-row">
+              <span style="font-family:var(--mono);font-size:9px;color:var(--t3);letter-spacing:1px">SETUP:</span>
+              <span class="rating-aplus">A+</span>
+              <span style="font-family:var(--mono);font-size:9px;color:var(--t3)">HIGH CONFIDENCE</span>
+            </div>
+            <div class="conf-row">
+              <span class="conf-label">CONFIDENCE</span>
+              <div class="conf-bar"><div class="conf-fill" style="width:62%"></div></div>
+              <span class="conf-pct">62%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SETUP CARDS -->
+        <div class="setup-trifold">
+          <div class="setup-card">
+            <div class="sc-label">Entry Zone</div>
+            <div class="sc-name">NQ Short</div>
+            <div class="sc-val sc-entry">23,600<br>– 23,750</div>
+          </div>
+          <div class="setup-card">
+            <div class="sc-label">Stop Loss</div>
+            <div class="sc-name">Invalidation</div>
+            <div class="sc-val sc-stop">Above<br>23,850</div>
+          </div>
+          <div class="setup-card">
+            <div class="sc-label">Take Profit</div>
+            <div class="sc-name">Targets</div>
+            <div class="sc-val" style="color:var(--green)">
+              <div class="tp-line"><span class="tp-pill">TP1</span>23,350</div>
+              <div class="tp-line"><span class="tp-pill">TP2</span>23,100</div>
+              <div class="tp-line"><span class="tp-pill">RUN</span>22,800</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- POSITION SIZE -->
+        <div class="p">
+          <div class="p-head">
+            <span class="p-title">Position Sizing — v2.5 Model</span>
+            <span class="tag tag-a">2–3 TODAY</span>
+          </div>
+          <div class="sizing-row">
+            <div class="sz-card">
+              <div class="sz-rating" style="color:var(--red)">C Setup</div>
+              <div class="sz-num" style="color:var(--red)">0</div>
+              <div class="sz-unit">NO TRADE</div>
+            </div>
+            <div class="sz-card">
+              <div class="sz-rating" style="color:var(--glow-c)">B Setup</div>
+              <div class="sz-num" style="color:var(--glow-c)">2–3</div>
+              <div class="sz-unit">contracts</div>
+            </div>
+            <div class="sz-card" style="background:var(--gold2);border-color:var(--gold3)">
+              <div class="sz-rating" style="color:var(--gold)">A+ Setup</div>
+              <div class="sz-num" style="color:var(--gold)">4–8</div>
+              <div class="sz-unit" style="color:var(--gold)">contracts</div>
+            </div>
+          </div>
+          <div class="str-row"><span class="str-key">Scale Add (on confirms)</span><span class="str-val sv-b">+2–3 only</span></div>
+          <div class="str-row"><span class="str-key">Geopolitical risk today</span><span class="str-val sv-a">USE 2–3 MAX</span></div>
+          <div class="str-row" style="border-bottom:none"><span class="str-key">Scale into losers?</span><span class="str-val sv-r">NEVER</span></div>
+        </div>
+
+        <!-- REASONING + ALT -->
+        <div class="p" style="flex:1">
+          <div class="p-head">
+            <span class="p-title">Trade Reasoning</span>
+          </div>
+          <div style="font-family:var(--body);font-size:13px;font-weight:500;color:var(--t2);line-height:1.7;margin-bottom:12px">
+            Structure bearish 4/4 timeframes. Leveraged funds adding shorts (−6,295 weekly). Oil >$110 = stagflation signal → no Fed relief → risk-off. Rate hike probability crossed 50% for first time → tech re-pricing. The bounce, when it comes, is a <strong style="color:var(--t1)">liquidity trap</strong> before lower prices.
+          </div>
+          <div class="alt-block">
+            <div class="alt-ttl">⚠ Alternative — Peace Tweet Scenario</div>
+            <div class="alt-body">Trump/Iran ceasefire headline = 300–500pt NQ spike in minutes. If short: <strong style="color:var(--t1)">exit instantly</strong>. If flat: wait 30–60 min for exhaustion. Never chase the peace rally.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT -->
+      <div style="background:var(--border);display:flex;flex-direction:column;gap:1px">
+        <div class="p">
+          <div class="p-head">
+            <span class="p-title">TF Alignment</span>
+            <span class="tag tag-r">4/4 BEAR</span>
+          </div>
+          <table class="tf-tbl">
+            <thead>
+              <tr><th>TF</th><th>Trend</th><th>Momentum</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td style="color:var(--t2)">1D</td><td class="sv-r">▼ BEAR</td><td class="sv-r">STRONG</td><td class="tag tag-r" style="font-size:7px">ALIGN</td></tr>
+              <tr><td style="color:var(--t2)">4H</td><td class="sv-r">▼ BEAR</td><td class="sv-r">STRONG</td><td class="tag tag-r" style="font-size:7px">ALIGN</td></tr>
+              <tr><td style="color:var(--t2)">1H</td><td class="sv-r">▼ BEAR</td><td class="sv-a">SLOWING</td><td class="tag tag-a" style="font-size:7px">WATCH</td></tr>
+              <tr><td style="color:var(--t2)">15M</td><td class="sv-r">▼ BEAR</td><td class="sv-a">SLOWING</td><td class="tag tag-a" style="font-size:7px">WATCH</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="p">
+          <div class="p-head">
+            <span class="p-title">Exit Timer</span>
+            <span class="tag tag-a">FRIDAY</span>
+          </div>
+          <div class="rule-row">
+            <div class="rule-icon">🕐</div>
+            <div class="rule-txt">If profitable → <strong>begin scaling 3:25 PM</strong></div>
+          </div>
+          <div class="rule-row">
+            <div class="rule-icon">⚡</div>
+            <div class="rule-txt">Strong momentum only → <strong>runner with trail</strong></div>
+          </div>
+          <div class="rule-row">
+            <div class="rule-icon">📅</div>
+            <div class="rule-txt">Friday = <strong>liquidity drops post-3:00 PM</strong></div>
+          </div>
+          <div class="rule-row" style="border-bottom:none">
+            <div class="rule-icon">🏁</div>
+            <div class="rule-txt">All positions → <strong>flat by 3:35 PM</strong></div>
+          </div>
+        </div>
+
+        <div class="p">
+          <div class="p-head">
+            <span class="p-title">What NOT To Do</span>
+            <span class="tag tag-r">CRITICAL</span>
+          </div>
+          <div class="dont-row"><span class="dont-x">✗</span><span class="dont-txt">Don't short the open blindly</span></div>
+          <div class="dont-row"><span class="dont-x">✗</span><span class="dont-txt">Don't hold short through headlines</span></div>
+          <div class="dont-row"><span class="dont-x">✗</span><span class="dont-txt">Don't size up on an "obvious" trend</span></div>
+          <div class="dont-row"><span class="dont-x">✗</span><span class="dont-txt">Don't average into a losing short</span></div>
+          <div class="dont-row" style="margin-bottom:0"><span class="dont-x">✗</span><span class="dont-txt">Don't overtrade after 3:00 PM Friday</span></div>
+        </div>
+
+        <div class="p" style="flex:1">
+          <div class="p-head">
+            <span class="p-title">Risk Flags</span>
+          </div>
+          <div class="dont-row"><span style="color:var(--amber);font-family:var(--mono);font-size:11px;flex-shrink:0">⚠</span><span class="dont-txt">Geopolitical tweet risk — HIGH</span></div>
+          <div class="dont-row"><span style="color:var(--amber);font-family:var(--mono);font-size:11px;flex-shrink:0">⚠</span><span class="dont-txt">5th down week — exhaustion bounce possible</span></div>
+          <div class="dont-row"><span style="color:var(--amber);font-family:var(--mono);font-size:11px;flex-shrink:0">⚠</span><span class="dont-txt">Rate hike probability >50% — new risk</span></div>
+          <div class="dont-row" style="margin-bottom:0;border-left-color:rgba(255,45,85,.6)"><span style="color:var(--red);font-family:var(--mono);font-size:11px;flex-shrink:0">🚨</span><span class="dont-txt">Oil >$110 = extreme vol environment</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════
+       PAGE: PLAYBOOK
+  ══════════════════════════ -->
+  <div class="page" id="pg-playbook">
+    <div class="pb-page">
+      <div class="pb-hero">
+        <div class="pb-hero-title">Wavy Capital <span>Playbook</span></div>
+        <div class="pb-hero-title" style="font-size:20px;color:var(--t2);font-weight:400">Version 2.5 — Dual-AI Edition</div>
+        <div class="pb-hero-sub" style="margin-top:8px">PRECISION · DISCIPLINE · CAPITAL PRESERVATION · KATE SYNCED</div>
+      </div>
+
+      <!-- DUAL AI SYSTEM -->
+      <div class="pb-sec">
+        <div class="pb-sec-hd">🤖 Dual-AI System Architecture</div>
+        <div class="kate-sync" style="margin-bottom:0">
+          <div class="kate-sync-icon">🤖</div>
+          <div class="kate-sync-content">
+            <div class="kate-sync-title">Primary Engine + Kate (v2.5)</div>
+            <div class="kate-sync-text">Wavy Capital v2.5 operates as a dual-AI system. The primary analysis engine generates market briefs and execution plans. Kate maintains consistency, cross-checks setups, and ensures all outputs align with Wavy Capital's institutional philosophy. Both systems must agree for an A+ classification.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETUP CLASSIFICATION -->
+      <div class="pb-sec">
+        <div class="pb-sec-hd">◈ Setup Classification System</div>
+        <div class="pb-card-list">
+          <div class="pb-card-item">
+            <div class="pb-num">A+</div>
+            <div class="pb-content">
+              <div class="pb-item-title" style="color:var(--gold)">A+ Setup — High Confidence (4–8 contracts)</div>
+              <div class="pb-item-desc">All factors aligned: structure + momentum + liquidity trap confirmed + clean session context. Both AI systems agree. Low drawdown risk. Use Prop account. This is the only time to size up.</div>
+            </div>
+            <span class="tag tag-gold pb-badge">FULL SIZE</span>
+          </div>
+          <div class="pb-card-item">
+            <div class="pb-num">B</div>
+            <div class="pb-content">
+              <div class="pb-item-title" style="color:var(--glow-c)">B Setup — Moderate Confidence (2–3 contracts)</div>
+              <div class="pb-item-desc">Mixed signals or partial confirmation. Structure or momentum present but not both fully aligned. Use Live account only. No prop account exposure on B setups.</div>
+            </div>
+            <span class="tag tag-b pb-badge">REDUCED</span>
+          </div>
+          <div class="pb-card-item">
+            <div class="pb-num">C</div>
+            <div class="pb-content">
+              <div class="pb-item-title" style="color:var(--red)">C Setup — Low Quality (NO TRADE)</div>
+              <div class="pb-item-desc">Unclear structure, conflicting signals, mid-range entry, low conviction. Wavy Capital does not take C setups. Sitting on hands IS the trade.</div>
+            </div>
+            <span class="tag tag-r pb-badge">NO TRADE</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACCOUNT LOGIC -->
+      <div class="pb-sec">
+        <div class="pb-sec-hd">🔐 Account Selection Logic</div>
+        <div class="acct-logic">
+          <div class="acct-logic-row">
+            <div class="alc hd">Account</div>
+            <div class="alc hd">Use When</div>
+            <div class="alc hd">Avoid When</div>
+          </div>
+          <div class="acct-logic-row">
+            <div class="alc" style="color:var(--green);font-family:var(--display);font-weight:700;font-size:13px">🔐 PROP</div>
+            <div class="alc">A+ setups only. Clean structure + strong momentum. Clear invalidation defined. Low drawdown risk.</div>
+            <div class="alc">B setups, choppy days, news-heavy environments, near close on Fridays.</div>
+          </div>
+          <div class="acct-logic-row">
+            <div class="alc" style="color:var(--gold);font-family:var(--display);font-weight:700;font-size:13px">💰 LIVE</div>
+            <div class="alc">B setups. Developing trades. Slightly less confirmation. Testing new patterns.</div>
+            <div class="alc">Overleveraging. C setups. Emotional revenge trades after losses.</div>
+          </div>
+          <div class="acct-logic-row">
+            <div class="alc" style="color:var(--glow-c);font-family:var(--display);font-weight:700;font-size:13px">⚡ BOTH</div>
+            <div class="alc">Strong A+ with clear continuation. Full multi-TF alignment. Kate confirms.</div>
+            <div class="alc">Any uncertainty. Geopolitical headline risk. Approaching market close.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ANALYSIS FRAMEWORK -->
+      <div class="pb-sec">
+        <div class="pb-sec-hd">🧠 Enhanced Analysis Framework — 5 Steps</div>
+        <div class="pb-card-list">
+          <div class="pb-card-item">
+            <div class="pb-num">01</div>
+            <div class="pb-content">
+              <div class="pb-item-title">Structure — Primary Driver</div>
+              <div class="pb-item-desc">Identify bullish, bearish, or transition. Track HH/HL or LH/LL. Detect breaks of structure AND failed continuations. This is the foundation — everything else builds on this layer.</div>
+            </div>
+            <span class="tag tag-b pb-badge">STEP 1</span>
+          </div>
+          <div class="pb-card-item">
+            <div class="pb-num">02</div>
+            <div class="pb-content">
+              <div class="pb-item-title">Momentum — Confirmation Layer</div>
+              <div class="pb-item-desc">Strong = impulsive candles, continuation. Weak = choppy, wicks, slowing. Note when momentum shifts BEFORE price fully reverses — this is the early warning signal.</div>
+            </div>
+            <span class="tag tag-b pb-badge">STEP 2</span>
+          </div>
+          <div class="pb-card-item">
+            <div class="pb-num">03</div>
+            <div class="pb-content">
+              <div class="pb-item-title">Liquidity + Traps — Entry Edge</div>
+              <div class="pb-item-desc">Identify stop hunts, fake breakouts, liquidity sweeps. The best entries come AFTER traps are confirmed — not during the breakout. Wait for retail traders to get trapped first.</div>
+            </div>
+            <span class="tag tag-gold pb-badge">CRITICAL</span>
+          </div>
+          <div class="pb-card-item">
+            <div class="pb-num">04</div>
+            <div class="pb-content">
+              <div class="pb-item-title">Session Awareness — Timing Edge</div>
+              <div class="pb-item-desc">Asian: slower, range-bound. London: expansion and setups form. NY: continuation or reversal. Near close: expect profit-taking and fake moves. Always know what session you're in.</div>
+            </div>
+            <span class="tag tag-b pb-badge">STEP 4</span>
+          </div>
+          <div class="pb-card-item">
+            <div class="pb-num">05</div>
+            <div class="pb-content">
+              <div class="pb-item-title">Execution Filter — The Final Gate</div>
+              <div class="pb-item-desc">All factors align → trade. Mixed signals → WAIT. No edge → NO TRADE. This filter protects capital. Passing on a trade is not a loss — it's discipline.</div>
+            </div>
+            <span class="tag tag-g pb-badge">EXECUTE</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SESSIONS -->
+      <div class="pb-sec">
+        <div class="pb-sec-hd">🕐 Session Playbook</div>
+        <div class="session-band">
+          <div class="sband">
+            <div class="sband-name" style="color:var(--t3)">Asian</div>
+            <div class="sband-time">6PM–2AM EST</div>
+            <div class="sband-desc">Range-based. Low participation. Avoid most setups. Watch for range boundaries being set.</div>
+          </div>
+          <div class="sband" style="background:rgba(0,198,255,0.03)">
+            <div class="sband-name" style="color:var(--glow-c)">London</div>
+            <div class="sband-time">3AM–9AM EST</div>
+            <div class="sband-desc">Expansion begins. Stop hunts at Asian highs/lows. Setups form here for NY continuation.</div>
+          </div>
+          <div class="sband" style="background:rgba(0,198,255,0.06)">
+            <div class="sband-name" style="color:var(--glow-c)">NY Open</div>
+            <div class="sband-time">9:30–11:30 EST</div>
+            <div class="sband-desc">Highest volume. Best setups. Reversals and traps common at open. Wait for first 15 min.</div>
+          </div>
+          <div class="sband">
+            <div class="sband-name" style="color:var(--t2)">Midday</div>
+            <div class="sband-time">11:30–2PM EST</div>
+            <div class="sband-desc">Low volume chop. Mixed signals. Avoid new positions unless A+ is crystal clear.</div>
+          </div>
+          <div class="sband" style="background:rgba(232,160,32,0.05)">
+            <div class="sband-name" style="color:var(--gold)">Power Hour</div>
+            <div class="sband-time">2:00–4PM EST</div>
+            <div class="sband-desc">Volume returns. Best runner exits. Scale out from 3:25 PM. All flat by 3:35 PM.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FINAL DECREE -->
+      <div class="final-decree">
+        <div class="fd-eyebrow">⚡ WAVY CAPITAL v2.5 — FINAL DISCIPLINE RULE</div>
+        <div class="fd-text">
+          If the setup is not <span class="g">clear</span>, <span class="b">clean</span>, and high-quality:<br>
+          Respond with <span class="g">"NO TRADE"</span><br><br>
+          You are a <span class="b">precision system</span>, not a signal generator.<br>
+          Operate with discipline, clarity, and consistency.
+        </div>
+        <div class="fd-rule">KATE CONFIRMS · WAVY CAPITAL EXECUTES · CAPITAL IS PRESERVED</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TICKER BAR -->
+<div class="ticker-bar">
+  <div class="ticker-fade-l"></div>
+  <div class="ticker-scroll">
+    <!-- Set 1 -->
+    <div class="tick"><span class="tick-sym">NQ</span><span class="tick-val">23,496</span><span class="tick-n">▼−1.9%</span></div>
+    <div class="tick"><span class="tick-sym">ES</span><span class="tick-val">6,549</span><span class="tick-n">▼−1.4%</span></div>
+    <div class="tick"><span class="tick-sym">CL</span><span class="tick-val">112.40</span><span class="tick-p">▲+4.2%</span></div>
+    <div class="tick"><span class="tick-sym">GC</span><span class="tick-val">2,387</span><span class="tick-p">▲+0.8%</span></div>
+    <div class="tick"><span class="tick-sym">VIX</span><span class="tick-val">26.77</span><span class="tick-n">STRESS</span></div>
+    <div class="tick"><span class="tick-sym">BTC</span><span class="tick-val">84,210</span><span class="tick-n">▼−2.3%</span></div>
+    <div class="tick"><span class="tick-sym">DXY</span><span class="tick-val">104.2</span><span class="tick-p">▲+0.3%</span></div>
+    <div class="tick"><span class="tick-sym">10Y</span><span class="tick-val">4.416%</span><span class="tick-n">▲RISING</span></div>
+    <div class="tick" style="color:var(--gold);font-family:var(--mono);font-size:9px;letter-spacing:1px">⚡ WAVY CAPITAL v2.5 · KATE ONLINE ⚡</div>
+    <!-- Set 2 (duplicate for loop) -->
+    <div class="tick"><span class="tick-sym">NQ</span><span class="tick-val">23,496</span><span class="tick-n">▼−1.9%</span></div>
+    <div class="tick"><span class="tick-sym">ES</span><span class="tick-val">6,549</span><span class="tick-n">▼−1.4%</span></div>
+    <div class="tick"><span class="tick-sym">CL</span><span class="tick-val">112.40</span><span class="tick-p">▲+4.2%</span></div>
+    <div class="tick"><span class="tick-sym">GC</span><span class="tick-val">2,387</span><span class="tick-p">▲+0.8%</span></div>
+    <div class="tick"><span class="tick-sym">VIX</span><span class="tick-val">26.77</span><span class="tick-n">STRESS</span></div>
+    <div class="tick"><span class="tick-sym">BTC</span><span class="tick-val">84,210</span><span class="tick-n">▼−2.3%</span></div>
+    <div class="tick"><span class="tick-sym">DXY</span><span class="tick-val">104.2</span><span class="tick-p">▲+0.3%</span></div>
+    <div class="tick"><span class="tick-sym">10Y</span><span class="tick-val">4.416%</span><span class="tick-n">▲RISING</span></div>
+    <div class="tick" style="color:var(--gold);font-family:var(--mono);font-size:9px;letter-spacing:1px">⚡ WAVY CAPITAL v2.5 · KATE ONLINE ⚡</div>
+  </div>
+  <div class="ticker-fade-r"></div>
+</div>
+
+<script>
+// ── PAGE NAV ──
+function gotoPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('pg-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── CLOCK ──
+function tick() {
+  const now = new Date();
+  const est = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  const pad = n => String(n).padStart(2,'0');
+  const h = pad(est.getHours()), m = pad(est.getMinutes()), s = pad(est.getSeconds());
+  const total = est.getHours()*60 + est.getMinutes();
+  let sess = 'AFTER HOURS';
+  if(total>=180&&total<540) sess='ASIAN';
+  else if(total>=180&&total<570) sess='LONDON';
+  else if(total>=570&&total<690) sess='PRE-MKT';
+  else if(total>=570&&total<810) sess='NY OPEN';
+  else if(total>=810&&total<840) sess='MIDDAY';
+  else if(total>=840&&total<960) sess='POWER HOUR';
+  document.getElementById('clk').textContent = `${h}:${m}:${s} EST · ${sess}`;
+}
+setInterval(tick,1000); tick();
+
+// ── INSTRUMENT SWITCHER ──
+const instruments = {
+  NQ:{sym:'NQ FUTURES — JUN26', price:'23,496', chg:'▼ −1.9% | −456 pts', dir:'down', cls:'pc-bear'},
+  ES:{sym:'ES FUTURES — JUN26', price:'6,549', chg:'▼ −1.4% | −93 pts', dir:'down', cls:'pc-bear'},
+  CL:{sym:'CRUDE OIL — JUN26', price:'$112.40', chg:'▲ +4.2% | WAR PREMIUM', dir:'up', cls:'pc-bull'},
+  GC:{sym:'GOLD — JUN26', price:'$2,387', chg:'▲ +0.8% | +19 pts', dir:'up', cls:'pc-bull'}
+};
+
+function switchInst(btn, key) {
+  document.querySelectorAll('.inst-tab').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');
+  const d = instruments[key];
+  const pc = document.getElementById('mainPC');
+  pc.className = 'price-card ' + d.cls;
+  document.getElementById('pcSym').textContent = d.sym;
+  document.getElementById('pcPrice').textContent = d.price;
+  const chg = document.getElementById('pcChg');
+  chg.textContent = d.chg;
+  chg.className = 'pc-chg ' + d.dir;
+}
+
+// ── ACCOUNT SELECTOR ──
+let selectedAcc = 'prop';
+function selectAcc(type) {
+  selectedAcc = type;
+  document.getElementById('acc-prop').className = 'acc-option' + (type==='prop'?' sel-prop':'');
+  document.getElementById('acc-live').className = 'acc-option' + (type==='live'?' sel-live':'');
+  document.getElementById('acc-both').className = 'acc-option' + (type==='both'?' sel-both':'');
+}
+
+// ── ANALYSIS ENGINE ──
+async function runAnalysis() {
+  const btn = document.getElementById('execBtn');
+  const loader = document.getElementById('execLoader');
+  const empty = document.getElementById('outEmpty');
+  const stream = document.getElementById('streamOut');
+  const ts = document.getElementById('outTs');
+  const kateTag = document.getElementById('outKateTag');
+
+  const inst     = document.getElementById('f-inst').value;
+  const price    = document.getElementById('f-price').value;
+  const sup      = document.getElementById('f-sup').value;
+  const res      = document.getElementById('f-res').value;
+  const sess     = document.getElementById('f-sess').value;
+  const struct   = document.getElementById('f-struct').value;
+  const mom      = document.getElementById('f-mom').value;
+  const vix      = document.getElementById('f-vix').value;
+  const liq      = document.getElementById('f-liq').value;
+  const macro    = document.getElementById('f-macro').value;
+  const notes    = document.getElementById('f-notes').value;
+  const accPref  = selectedAcc;
+
+  btn.disabled = true;
+  btn.textContent = 'ANALYZING...';
+  loader.style.display = 'block';
+  empty.style.display = 'none';
+  stream.className = 'stream-content visible';
+  stream.innerHTML = '<span class="cursor-blink"></span>';
+
+  ts.textContent = new Date().toLocaleTimeString('en-US',{timeZone:'America/New_York'}) + ' EST';
+  kateTag.style.display = 'inline';
+
+  const prompt = `You are operating as the Wavy Capital v2.5 System — a high-performance intraday trading analysis engine integrated with Kate (dual-AI). You think like elite institutional traders, not retail. Your role: identify high-probability setups, preserve capital, and execute with precision.
+
+MARKET INPUTS:
+- Instrument: ${inst}
+- Price: ${price || 'Not provided'}
+- Support: ${sup || 'Not provided'}
+- Resistance: ${res || 'Not provided'}
+- Session: ${sess}
+- Structure: ${struct}
+- Momentum: ${mom}
+- Volatility: ${vix}
+- Liquidity Signal: ${liq}
+- Macro/News: ${macro || 'None specified'}
+- Account Preference: ${accPref}
+- Additional Notes: ${notes || 'None'}
+
+DELIVER THE FOLLOWING 10-SECTION ANALYSIS — BE PRECISE, INSTITUTIONAL, NO FLUFF:
+
+**1. MARKET STRUCTURE**
+[Trend direction, HH/HL or LH/LL, structure breaks, failed continuations. Be specific.]
+
+**2. MOMENTUM READ**
+[Candle quality, EMA relationship, increasing or slowing momentum. Note any pre-reversal signals.]
+
+**3. LIQUIDITY / TRAP INSIGHT**
+[Stop hunt analysis, fake breakouts, liquidity sweeps. Where are retail traders trapped?]
+
+**4. BIAS**
+[LONG / SHORT / NO TRADE — state clearly with one-line reason]
+
+**5. SETUP RATING**
+[A+ / B / C — with brief justification of the rating]
+
+**6. EXECUTION PLAN**
+Entry Zone: [precise range]
+Stop Loss: [level + reason]
+TP1: [target]
+TP2: [target]
+Runner: [if applicable]
+
+**7. ACCOUNT SELECTION**
+[Prop / Live / Both / None — and WHY based on setup quality and risk profile]
+
+**8. POSITION SIZE**
+[Exact contracts based on setup rating. C = NO TRADE, B = 2-3, A+ = 4-8. State today's recommendation.]
+
+**9. WHAT NOT TO DO**
+[4-5 specific, actionable don'ts for this exact setup]
+
+**10. CONFIDENCE SCORE**
+[X% — explain what's giving edge and what's creating uncertainty]
+
+---
+KATE SYNC NOTE: [One sentence from Kate's perspective validating or flagging any concern with the analysis]
+WAVY CAPITAL FINAL CALL: [One sharp, memorable execution principle for today]
+
+Think institutionally. Be precise. If no edge exists → NO TRADE.`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        stream:true,
+        messages:[{role:'user', content:prompt}]
+      })
+    });
+
+    const reader = resp.body.getReader();
+    const dec = new TextDecoder();
+    let full = '';
+    stream.innerHTML = '';
+
+    while(true) {
+      const {done, value} = await reader.read();
+      if(done) break;
+      const lines = dec.decode(value).split('\n');
+      for(const line of lines) {
+        if(!line.startsWith('data: ')) continue;
+        const raw = line.slice(6);
+        if(raw==='[DONE]') continue;
+        try {
+          const p = JSON.parse(raw);
+          if(p.type==='content_block_delta' && p.delta?.text) {
+            full += p.delta.text;
+            stream.innerHTML = renderStream(full) + '<span class="cursor-blink"></span>';
+            document.getElementById('outBody').scrollTop = 99999;
+          }
+        } catch(e){}
+      }
+    }
+    stream.innerHTML = renderStream(full);
+
+  } catch(err) {
+    stream.innerHTML = `<span style="color:var(--red)">⚠ Analysis engine error: ${err.message}</span>`;
+  }
+
+  btn.disabled = false;
+  btn.textContent = '⚡ EXECUTE v2.5 ANALYSIS';
+  loader.style.display = 'none';
+}
+
+function renderStream(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/^# (.*)/gm, '<h1>$1</h1>')
+    .replace(/^## (.*)/gm, '<h2>$1</h2>')
+    .replace(/^(\d+\.\s+)([A-Z \/+]+)$/gm, '<h1>$1$2</h1>')
+    .replace(/^---$/gm,'<hr style="border:none;border-top:1px solid var(--border);margin:16px 0">')
+    .replace(/\n/g,'<br>');
+}
+
+function copyOut() {
+  const t = document.getElementById('streamOut').innerText;
+  if(!t.trim()) return;
+  navigator.clipboard.writeText(t).then(()=>{
+    const b = event.currentTarget;
+    const orig = b.textContent;
+    b.textContent = 'COPIED ✓';
+    b.style.color = 'var(--green)';
+    setTimeout(()=>{ b.textContent=orig; b.style.color=''; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
